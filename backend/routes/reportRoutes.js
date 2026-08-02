@@ -1,32 +1,23 @@
 const express = require("express");
 const router = express.Router();
 
-const DisasterReport = require("../models/DisasterReport");
+const {
+  getReports,
+  createReport,
+  deleteReport,
+  updateReport,
+} = require("../controllers/reportController");
 
 // GET all reports
-router.get("/", async (req, res) => {
-  try {
-    const reports = await DisasterReport.find();
-
-    res.json(reports);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
+router.get("/", getReports);
 
 // CREATE report
-router.post("/", async (req, res) => {
-  try {
-    const report = await DisasterReport.create(req.body);
+router.post("/", createReport);
 
-    res.status(201).json(report);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-});
+// UPDATE report
+router.put("/:id", updateReport);
+
+// DELETE report
+router.delete("/:id", deleteReport);
 
 module.exports = router;
