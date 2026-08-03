@@ -1,13 +1,35 @@
-import { useState } from "react";
-import { createReport } from "../services/reportService";
+import { useState, useEffect } from "react";
+import {
+  createReport,
+  updateReport,
+} from "../services/reportService";
 
-function ReportForm({ onReportAdded }) {
+function ReportForm({ onReportAdded, selectedReport }) {
   const [formData, setFormData] = useState({
     location: "",
     disasterType: "",
     severity: "",
     description: "",
   });
+
+  // Edit mode
+  useEffect(() => {
+    if (selectedReport) {
+      setFormData({
+        location: selectedReport.location,
+        disasterType: selectedReport.disasterType,
+        severity: selectedReport.severity,
+        description: selectedReport.description,
+      });
+    } else {
+      setFormData({
+        location: "",
+        disasterType: "",
+        severity: "",
+        description: "",
+      });
+    }
+  }, [selectedReport]);
 
   const handleChange = (e) => {
     setFormData({
@@ -20,9 +42,15 @@ function ReportForm({ onReportAdded }) {
     e.preventDefault();
 
     try {
-      await createReport(formData);
+      if (selectedReport) {
+        await updateReport(selectedReport._id, formData);
 
-      alert("Report Submitted Successfully!");
+        alert("Report Updated Successfully!");
+      } else {
+        await createReport(formData);
+
+        alert("Report Submitted Successfully!");
+      }
 
       setFormData({
         location: "",
@@ -34,14 +62,18 @@ function ReportForm({ onReportAdded }) {
       onReportAdded();
     } catch (error) {
       console.error(error);
-      alert("Error Submitting Report");
+      alert("Operation Failed");
     }
   };
 
   return (
     <div className="card shadow mb-4">
       <div className="card-header bg-primary text-white">
-        <h4 className="mb-0">Report a Disaster</h4>
+        <h4 className="mb-0">
+          {selectedReport
+            ? "Edit Disaster Report"
+            : "Report a Disaster"}
+        </h4>
       </div>
 
       <div className="card-body">
@@ -99,7 +131,7 @@ function ReportForm({ onReportAdded }) {
           </div>
 
           <button className="btn btn-primary w-100">
-            Submit Report
+            {selectedReport ? "Update Report" : "Submit Report"}
           </button>
         </form>
       </div>

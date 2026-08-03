@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { getReports } from "../services/reportService";
 import ReportCard from "./ReportCard";
 
-function ReportList({ refresh }) {
+function ReportList({
+  refresh,
+  onEdit,
+  search,
+  severityFilter,
+}) {
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
@@ -18,18 +23,33 @@ function ReportList({ refresh }) {
     }
   };
 
+  // Search + Filter
+  const filteredReports = reports.filter((report) => {
+    const locationMatch = report.location
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const severityMatch =
+      severityFilter === "All"
+        ? true
+        : report.severity === severityFilter;
+
+    return locationMatch && severityMatch;
+  });
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">📋 Disaster Reports</h2>
 
-      {reports.length === 0 ? (
+      {filteredReports.length === 0 ? (
         <p>No reports found.</p>
       ) : (
-        reports.map((report) => (
-        <ReportCard
+        filteredReports.map((report) => (
+          <ReportCard
             key={report._id}
             report={report}
             onDelete={fetchReports}
+            onEdit={onEdit}
           />
         ))
       )}

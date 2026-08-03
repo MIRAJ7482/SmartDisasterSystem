@@ -1,6 +1,6 @@
 import { deleteReport } from "../services/reportService";
 
-function ReportCard({ report, onDelete }) {
+function ReportCard({ report, onDelete, onEdit }) {
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this report?"
@@ -39,7 +39,10 @@ function ReportCard({ report, onDelete }) {
           <strong>Description:</strong> {report.description}
         </p>
 
-        <button className="btn btn-warning me-2">
+        <button
+          className="btn btn-warning me-2"
+          onClick={() => onEdit(report)}
+        >
           Edit
         </button>
 
