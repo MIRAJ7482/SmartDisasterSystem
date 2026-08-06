@@ -5,8 +5,8 @@ import ReportCard from "./ReportCard";
 function ReportList({
   refresh,
   onEdit,
-  search,
-  severityFilter,
+  search = "",
+  severityFilter = "All",
 }) {
   const [reports, setReports] = useState([]);
 
@@ -25,7 +25,7 @@ function ReportList({
 
   // Search + Filter
   const filteredReports = reports.filter((report) => {
-    const locationMatch = report.location
+    const locationMatch = (report.location || "")
       .toLowerCase()
       .includes(search.toLowerCase());
 
@@ -42,7 +42,9 @@ function ReportList({
       <h2 className="mb-4">📋 Disaster Reports</h2>
 
       {filteredReports.length === 0 ? (
-        <p>No reports found.</p>
+        <p className="text-center text-muted">
+          No reports found.
+        </p>
       ) : (
         filteredReports.map((report) => (
           <ReportCard

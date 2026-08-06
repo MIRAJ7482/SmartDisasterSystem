@@ -25,3 +25,12 @@ export const updateReport = async (id, reportData) => {
   const response = await axios.put(`${API_URL}/${id}`, reportData);
   return response.data;
 };
+
+export const loginUser = async (userData) => {
+  const response = await axios.post(
+    "http://localhost:5000/api/auth/login",
+    userData
+  );
+
+  return response.data;
+};

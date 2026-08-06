@@ -1,20 +1,16 @@
-import { useState } from "react";
-import Dashboard from "./components/Dashboard";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
 import ReportForm from "./components/ReportForm";
 import ReportList from "./components/ReportList";
-import SearchFilter from "./components/SearchFilter";
-import Analytics from "./components/Analytics";
+import Login from "./pages/Login";
 
-function App() {
+import { useState } from "react";
+
+function Home() {
   const [refresh, setRefresh] = useState(false);
-
-  // Selected report for editing
   const [selectedReport, setSelectedReport] = useState(null);
-
-  // Search & Filter
-  const [search, setSearch] = useState("");
-  const [severityFilter, setSeverityFilter] = useState("All");
 
   const refreshReports = () => {
     setRefresh(!refresh);
@@ -22,32 +18,36 @@ function App() {
   };
 
   return (
+    <div className="container mt-4">
+      <ReportForm
+        onReportAdded={refreshReports}
+        selectedReport={selectedReport}
+      />
+
+      <Dashboard refresh={refresh} />
+
+      <ReportList
+        refresh={refresh}
+        onEdit={setSelectedReport}
+      />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <>
       <Navbar />
 
-      <div className="container mt-4">
-        <ReportForm
-          onReportAdded={refreshReports}
-          selectedReport={selectedReport}
-        />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-        <Dashboard refresh={refresh} />
-        <Analytics refresh={refresh} />
+        <Route path="/login" element={<Login />} />
 
-        <SearchFilter
-          search={search}
-          setSearch={setSearch}
-          severityFilter={severityFilter}
-          setSeverityFilter={setSeverityFilter}
-        />
+        <Route path="/dashboard" element={<Dashboard refresh={false} />} />
 
-        <ReportList
-          refresh={refresh}
-          onEdit={setSelectedReport}
-          search={search}
-          severityFilter={severityFilter}
-        />
-      </div>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </>
   );
 }
