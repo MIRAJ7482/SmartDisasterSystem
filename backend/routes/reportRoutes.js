@@ -8,16 +8,52 @@ const {
   updateReport,
 } = require("../controllers/reportController");
 
-// GET all reports
+const { protect } = require("../middleware/authMiddleware");
+
+// =====================================
+// GET ALL REPORTS
+// Public - Everyone can view
+// =====================================
+
 router.get("/", getReports);
 
-// CREATE report
-router.post("/", createReport);
 
-// UPDATE report
-router.put("/:id", updateReport);
+// =====================================
+// CREATE REPORT
+// Logged-in users only
+// =====================================
 
-// DELETE report
-router.delete("/:id", deleteReport);
+router.post(
+  "/",
+  protect,
+  createReport
+);
+
+
+// =====================================
+// UPDATE REPORT
+// Owner OR Admin
+// Permission checked in controller
+// =====================================
+
+router.put(
+  "/:id",
+  protect,
+  updateReport
+);
+
+
+// =====================================
+// DELETE REPORT
+// Owner OR Admin
+// Permission checked in controller
+// =====================================
+
+router.delete(
+  "/:id",
+  protect,
+  deleteReport
+);
+
 
 module.exports = router;

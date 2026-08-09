@@ -4,7 +4,7 @@ import ReportCard from "./ReportCard";
 
 function ReportList({
   refresh,
-  onEdit,
+  onEdit = () => {},
   search = "",
   severityFilter = "All",
 }) {
@@ -23,7 +23,10 @@ function ReportList({
     }
   };
 
-  // Search + Filter
+  // =========================
+  // SEARCH + SEVERITY FILTER
+  // =========================
+
   const filteredReports = reports.filter((report) => {
     const locationMatch = (report.location || "")
       .toLowerCase()
@@ -39,12 +42,19 @@ function ReportList({
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">📋 Disaster Reports</h2>
 
+      {/* Title */}
+      <h2 className="mb-4">
+        📋 Disaster Reports
+      </h2>
+
+      {/* Reports */}
       {filteredReports.length === 0 ? (
-        <p className="text-center text-muted">
-          No reports found.
-        </p>
+        <div className="text-center py-4">
+          <p className="text-muted">
+            No reports found.
+          </p>
+        </div>
       ) : (
         filteredReports.map((report) => (
           <ReportCard
@@ -55,6 +65,7 @@ function ReportList({
           />
         ))
       )}
+
     </div>
   );
 }

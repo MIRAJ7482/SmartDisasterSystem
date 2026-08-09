@@ -6,16 +6,26 @@ const disasterReportSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     disasterType: {
       type: String,
       required: true,
     },
+
     severity: {
       type: String,
       required: true,
     },
+
     description: {
       type: String,
+      required: true,
+    },
+
+    // User who created this report
+    reportedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },
