@@ -12,7 +12,7 @@ A web-based disaster reporting and management system that allows users to report
 
 ### 🏠 Home Page
 
-![Home Page](screenshots/home.png)
+![Home Page](screenshots/home.PNG)
 
 ### 📊 Dashboard
 
@@ -20,15 +20,15 @@ A web-based disaster reporting and management system that allows users to report
 
 ### 🚨 Disaster Reports
 
-![Disaster Reports](screenshots/reports.png)
+![Disaster Reports](screenshots/reports.PNG)
 
 ### 🔐 Login Page
 
-![Login Page](screenshots/login.png)
+![Login Page](screenshots/login.PNG)
 
 ### 🔐 Register Page
 
-![Register Page](screenshots/register.png)
+![Register Page](screenshots/register.PNG)
 
 ### 📝 Report Disaster
 
