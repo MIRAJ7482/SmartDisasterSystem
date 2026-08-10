@@ -20,7 +20,7 @@ A web-based disaster reporting and management system that allows users to report
 
 ### 🚨 Disaster Reports
 
-![Disaster Reports](screenshots/reports.PNG)
+![Disaster Reports](screenshots/reports.png)
 
 ### 🔐 Login Page
 
@@ -32,7 +32,7 @@ A web-based disaster reporting and management system that allows users to report
 
 ### 📝 Report Disaster
 
-![Report Disaster](screenshots/report.png)
+![Report Disaster](screenshots/report.PNG)
 
 
 
