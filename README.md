@@ -5,7 +5,6 @@ A web-based disaster reporting and management system that allows users to report
 ## 🌐 Live Demo
 
 🔗 **Live Website:**  
-https://YOUR-LIVE-WEBSITE-LINK.com
 
 ---
 
