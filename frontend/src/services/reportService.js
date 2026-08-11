@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/reports";
+// Production Backend
+const API_URL =
+  "https://smart-disaster-backend-skfj.onrender.com/api/reports";
+
+const AUTH_URL =
+  "https://smart-disaster-backend-skfj.onrender.com/api/auth";
 
 // ===============================
 // Get all reports
@@ -11,7 +16,6 @@ export const getReports = async () => {
   return response.data;
 };
 
-
 // ===============================
 // Create new report
 // Login required
@@ -19,19 +23,14 @@ export const getReports = async () => {
 export const createReport = async (reportData) => {
   const token = localStorage.getItem("token");
 
-  const response = await axios.post(
-    API_URL,
-    reportData,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await axios.post(API_URL, reportData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return response.data;
 };
-
 
 // ===============================
 // Delete report
@@ -40,18 +39,14 @@ export const createReport = async (reportData) => {
 export const deleteReport = async (id) => {
   const token = localStorage.getItem("token");
 
-  const response = await axios.delete(
-    `${API_URL}/${id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return response.data;
 };
-
 
 // ===============================
 // Update report
@@ -73,13 +68,12 @@ export const updateReport = async (id, reportData) => {
   return response.data;
 };
 
-
 // ===============================
 // Login
 // ===============================
 export const loginUser = async (userData) => {
   const response = await axios.post(
-    "http://localhost:5000/api/auth/login",
+    `${AUTH_URL}/login`,
     userData
   );
 
