@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function Register() {
   const navigate = useNavigate();
 
@@ -33,7 +36,7 @@ function Register() {
       setLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL}/api/auth/register`,
         {
           name: formData.name,
           email: formData.email,
@@ -46,12 +49,13 @@ function Register() {
       navigate("/login");
 
     } catch (error) {
-      console.error(error);
+      console.error("Registration Error:", error);
 
       alert(
         error.response?.data?.message ||
         "Registration failed!"
       );
+
     } finally {
       setLoading(false);
     }
@@ -78,7 +82,6 @@ function Register() {
 
                 {/* Name */}
                 <div className="mb-3">
-
                   <label className="form-label">
                     Full Name
                   </label>
@@ -92,12 +95,10 @@ function Register() {
                     placeholder="Enter your name"
                     required
                   />
-
                 </div>
 
                 {/* Email */}
                 <div className="mb-3">
-
                   <label className="form-label">
                     Email
                   </label>
@@ -111,12 +112,10 @@ function Register() {
                     placeholder="Enter your email"
                     required
                   />
-
                 </div>
 
                 {/* Password */}
                 <div className="mb-3">
-
                   <label className="form-label">
                     Password
                   </label>
@@ -130,12 +129,10 @@ function Register() {
                     placeholder="Create a password"
                     required
                   />
-
                 </div>
 
                 {/* Confirm Password */}
                 <div className="mb-3">
-
                   <label className="form-label">
                     Confirm Password
                   </label>
@@ -149,7 +146,6 @@ function Register() {
                     placeholder="Confirm your password"
                     required
                   />
-
                 </div>
 
                 {/* Register Button */}

@@ -4,9 +4,10 @@ import { useAuth } from "../context/AuthContext";
 
 function ReportCard({ report, onDelete, onEdit }) {
   const { user } = useAuth();
+
   const [deleting, setDeleting] = useState(false);
 
-  // Check whether current user owns this report
+  // Check report owner
   const isOwner =
     user &&
     report.reportedBy &&
@@ -15,11 +16,15 @@ function ReportCard({ report, onDelete, onEdit }) {
       report.reportedBy === user.id
     );
 
-  // Admin can manage every report
+  // Admin can manage all reports
   const isAdmin = user?.role === "admin";
 
   // Owner OR Admin
   const canManage = isAdmin || isOwner;
+
+  // =========================
+  // DELETE REPORT
+  // =========================
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -53,6 +58,19 @@ function ReportCard({ report, onDelete, onEdit }) {
     }
   };
 
+  // =========================
+  // EDIT REPORT
+  // =========================
+
+  const handleEdit = () => {
+    if (!onEdit) {
+      console.error("onEdit function is missing!");
+      return;
+    }
+
+    onEdit(report);
+  };
+
   return (
     <div className="card shadow-sm mb-3">
 
@@ -63,7 +81,7 @@ function ReportCard({ report, onDelete, onEdit }) {
           📍 {report.location}
         </h5>
 
-        {/* Disaster */}
+        {/* Disaster Type */}
         <p>
           <strong>Disaster:</strong>{" "}
           {report.disasterType}
@@ -98,14 +116,16 @@ function ReportCard({ report, onDelete, onEdit }) {
 
             {/* Edit */}
             <button
+              type="button"
               className="btn btn-warning me-2"
-              onClick={() => onEdit(report)}
+              onClick={handleEdit}
             >
               ✏️ Edit
             </button>
 
             {/* Delete */}
             <button
+              type="button"
               className="btn btn-danger"
               onClick={handleDelete}
               disabled={deleting}
