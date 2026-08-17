@@ -5,8 +5,7 @@ A web-based disaster reporting and management system that allows users to report
 ## 🌐 Live Demo
 
 🔗 **Live Website:**  
-
----
+https://smart-disaster-system-murex.vercel.app/
 
 ## 📸 Project Screenshots
 

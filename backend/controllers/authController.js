@@ -2,7 +2,10 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Register User
+// =====================================
+// REGISTER USER
+// =====================================
+
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -25,7 +28,10 @@ const registerUser = async (req, res) => {
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      salt
+    );
 
     // Create user
     const user = await User.create({
@@ -35,13 +41,14 @@ const registerUser = async (req, res) => {
     });
 
     res.status(201).json({
-    message: "Registration Successful",
-    user: {
+      message: "Registration Successful",
+
+      user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-    },
+      },
     });
 
   } catch (error) {
@@ -51,7 +58,11 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Login User
+
+// =====================================
+// LOGIN USER
+// =====================================
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -73,7 +84,10 @@ const loginUser = async (req, res) => {
     }
 
     // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
 
     if (!isMatch) {
       return res.status(400).json({
@@ -95,7 +109,9 @@ const loginUser = async (req, res) => {
 
     res.status(200).json({
       message: "Login Successful",
+
       token,
+
       user: {
         id: user._id,
         name: user.name,
@@ -111,7 +127,37 @@ const loginUser = async (req, res) => {
   }
 };
 
+
+// =====================================
+// GET ALL USERS
+// Admin Dashboard
+// =====================================
+
+const getAllUsers = async (req, res) => {
+  try {
+
+    const users = await User.find()
+      .select("-password")
+      .sort({
+        createdAt: -1,
+      });
+
+    res.status(200).json(users);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
+// =====================================
+// EXPORT
+// =====================================
+
 module.exports = {
   registerUser,
   loginUser,
+  getAllUsers,
 };
