@@ -55,7 +55,7 @@ function ReportForm({ onReportAdded, selectedReport }) {
 
     try {
       // =========================
-      // UPDATE
+      // UPDATE REPORT
       // =========================
 
       if (selectedReport) {
@@ -64,7 +64,6 @@ function ReportForm({ onReportAdded, selectedReport }) {
           formData
         );
 
-        // Clear form
         setFormData({
           location: "",
           disasterType: "",
@@ -72,7 +71,6 @@ function ReportForm({ onReportAdded, selectedReport }) {
           description: "",
         });
 
-        // Refresh reports
         if (onReportAdded) {
           onReportAdded();
         }
@@ -81,13 +79,12 @@ function ReportForm({ onReportAdded, selectedReport }) {
       }
 
       // =========================
-      // CREATE
+      // CREATE REPORT
       // =========================
 
       else {
         await createReport(formData);
 
-        // Clear form
         setFormData({
           location: "",
           disasterType: "",
@@ -95,7 +92,6 @@ function ReportForm({ onReportAdded, selectedReport }) {
           description: "",
         });
 
-        // Refresh reports
         if (onReportAdded) {
           onReportAdded();
         }
@@ -119,7 +115,9 @@ function ReportForm({ onReportAdded, selectedReport }) {
   return (
     <div className="card shadow mb-4">
 
-      {/* Header */}
+      {/* ===============================
+          HEADER
+      =============================== */}
 
       <div className="card-header bg-primary text-white">
 
@@ -131,13 +129,17 @@ function ReportForm({ onReportAdded, selectedReport }) {
 
       </div>
 
-      {/* Body */}
+      {/* ===============================
+          BODY
+      =============================== */}
 
       <div className="card-body">
 
         <form onSubmit={submitHandler}>
 
-          {/* Location */}
+          {/* ===============================
+              LOCATION
+          =============================== */}
 
           <div className="mb-3">
 
@@ -157,7 +159,9 @@ function ReportForm({ onReportAdded, selectedReport }) {
 
           </div>
 
-          {/* Disaster Type */}
+          {/* ===============================
+              DISASTER TYPE
+          =============================== */}
 
           <div className="mb-3">
 
@@ -165,19 +169,65 @@ function ReportForm({ onReportAdded, selectedReport }) {
               Disaster Type
             </label>
 
-            <input
-              type="text"
-              className="form-control"
+            <select
+              className="form-select"
               name="disasterType"
               value={formData.disasterType}
               onChange={handleChange}
-              placeholder="Example: Flood, Fire, Cyclone"
               required
-            />
+            >
+
+              <option value="">
+                Select Disaster Type
+              </option>
+
+              <option value="Fire">
+                🔥 Fire
+              </option>
+
+              <option value="Flood">
+                🌊 Flood
+              </option>
+
+              <option value="Cyclone">
+                🌀 Cyclone
+              </option>
+
+              <option value="Earthquake">
+                🌍 Earthquake
+              </option>
+
+              <option value="Road Accident">
+                🚗 Road Accident
+              </option>
+
+              <option value="Landslide">
+                ⛰️ Landslide
+              </option>
+
+              <option value="Storm">
+                🌪️ Storm
+              </option>
+
+              <option value="Tsunami">
+                🌊 Tsunami
+              </option>
+
+              <option value="Volcanic Eruption">
+                🌋 Volcanic Eruption
+              </option>
+
+              <option value="Drought">
+                ☀️ Drought
+              </option>
+
+            </select>
 
           </div>
 
-          {/* Severity */}
+          {/* ===============================
+              SEVERITY
+          =============================== */}
 
           <div className="mb-3">
 
@@ -213,7 +263,9 @@ function ReportForm({ onReportAdded, selectedReport }) {
 
           </div>
 
-          {/* Description */}
+          {/* ===============================
+              DESCRIPTION
+          =============================== */}
 
           <div className="mb-3">
 
@@ -233,15 +285,19 @@ function ReportForm({ onReportAdded, selectedReport }) {
 
           </div>
 
-          {/* Submit */}
+          {/* ===============================
+              SUBMIT BUTTON
+          =============================== */}
 
           <button
             type="submit"
             className="btn btn-primary w-100"
           >
+
             {selectedReport
               ? "Update Report"
               : "Submit Report"}
+
           </button>
 
         </form>
