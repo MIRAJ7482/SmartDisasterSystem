@@ -14,12 +14,20 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
 
+  // =====================================
+  // Handle Input Change
+  // =====================================
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
+
+  // =====================================
+  // Handle Login
+  // =====================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,17 +40,24 @@ function Login() {
       // Update AuthContext and LocalStorage
       login(data.user, data.token);
 
+      // =================================
+      // Role Based Redirect
+      // =================================
 
-      // Go to report page after login
-      navigate("/report");
+      if (data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
 
     } catch (error) {
-      console.error(error);
+      console.error("Login Error:", error);
 
       alert(
         error.response?.data?.message ||
           "Login failed. Please check your email and password."
       );
+
     } finally {
       setLoading(false);
     }
