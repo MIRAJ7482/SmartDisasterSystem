@@ -86,7 +86,7 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
 
       {/* ===============================
           Header

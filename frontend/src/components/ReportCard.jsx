@@ -7,7 +7,10 @@ function ReportCard({ report, onDelete, onEdit }) {
 
   const [deleting, setDeleting] = useState(false);
 
-  // Check report owner
+  // =========================================
+  // CHECK REPORT OWNER
+  // =========================================
+
   const isOwner =
     user &&
     report.reportedBy &&
@@ -16,15 +19,14 @@ function ReportCard({ report, onDelete, onEdit }) {
       report.reportedBy === user.id
     );
 
-  // Admin can manage all reports
   const isAdmin = user?.role === "admin";
 
-  // Owner OR Admin
   const canManage = isAdmin || isOwner;
 
-  // =========================
+
+  // =========================================
   // DELETE REPORT
-  // =========================
+  // =========================================
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -58,9 +60,10 @@ function ReportCard({ report, onDelete, onEdit }) {
     }
   };
 
-  // =========================
+
+  // =========================================
   // EDIT REPORT
-  // =========================
+  // =========================================
 
   const handleEdit = () => {
     if (!onEdit) {
@@ -71,76 +74,334 @@ function ReportCard({ report, onDelete, onEdit }) {
     onEdit(report);
   };
 
+
+  // =========================================
+  // DISASTER ICON
+  // =========================================
+
+  const getDisasterIcon = (type) => {
+
+    const disaster = (type || "").toLowerCase().trim();
+
+    if (
+      disaster.includes("flood") ||
+      disaster.includes("water")
+    ) {
+      return "🌊";
+    }
+
+    if (
+      disaster.includes("fire") ||
+      disaster.includes("wildfire")
+    ) {
+      return "🔥";
+    }
+
+    if (
+      disaster.includes("cyclone") ||
+      disaster.includes("hurricane") ||
+      disaster.includes("typhoon")
+    ) {
+      return "🌀";
+    }
+
+    if (
+      disaster.includes("earthquake") ||
+      disaster.includes("quake")
+    ) {
+      return "🌎";
+    }
+
+    if (
+      disaster.includes("landslide") ||
+      disaster.includes("land slide")
+    ) {
+      return "⛰️";
+    }
+
+    if (
+      disaster.includes("storm") ||
+      disaster.includes("thunderstorm")
+    ) {
+      return "⛈️";
+    }
+
+    if (
+      disaster.includes("tornado")
+    ) {
+      return "🌪️";
+    }
+
+    if (
+      disaster.includes("tsunami")
+    ) {
+      return "🌊";
+    }
+
+    if (
+      disaster.includes("drought")
+    ) {
+      return "☀️";
+    }
+
+    if (
+      disaster.includes("heatwave") ||
+      disaster.includes("heat wave")
+    ) {
+      return "🌡️";
+    }
+
+    if (
+      disaster.includes("cold") ||
+      disaster.includes("cold wave")
+    ) {
+      return "🥶";
+    }
+
+    if (
+      disaster.includes("lightning")
+    ) {
+      return "⚡";
+    }
+
+    if (
+      disaster.includes("avalanche")
+    ) {
+      return "🏔️";
+    }
+
+    if (
+      disaster.includes("volcano")
+    ) {
+      return "🌋";
+    }
+
+    if (
+      disaster.includes("building") ||
+      disaster.includes("collapse")
+    ) {
+      return "🏚️";
+    }
+
+    // Default
+    return "⚠️";
+  };
+
+
+  // =========================================
+  // SEVERITY STYLE
+  // =========================================
+
+  const getSeverityClass = () => {
+
+    switch (report.severity) {
+
+      case "High":
+        return "severity-high";
+
+      case "Medium":
+        return "severity-medium";
+
+      case "Low":
+        return "severity-low";
+
+      default:
+        return "severity-default";
+    }
+  };
+
+
+  // =========================================
+  // STATUS STYLE
+  // =========================================
+
+  const getStatusClass = () => {
+
+    switch (report.status) {
+
+      case "Resolved":
+        return "status-resolved";
+
+      case "Under Review":
+        return "status-review";
+
+      case "Pending":
+      default:
+        return "status-pending";
+    }
+  };
+
+
+  // =========================================
+  // RENDER
+  // =========================================
+
   return (
-    <div className="card shadow-sm mb-3">
 
-      <div className="card-body">
+    <div className="report-card">
 
-        {/* Location */}
-        <h5 className="card-title">
-          📍 {report.location}
-        </h5>
+      {/* =====================================
+          CARD HEADER
+      ===================================== */}
 
-        {/* Disaster Type */}
-        <p>
-          <strong>Disaster:</strong>{" "}
-          {report.disasterType}
-        </p>
+      <div className="report-card-header">
 
-        {/* Severity */}
-        <p>
-          <strong>Severity:</strong>{" "}
-          {report.severity}
-        </p>
+        <div className="report-icon">
 
-        {/* Description */}
-        <p>
-          <strong>Description:</strong>{" "}
-          {report.description}
-        </p>
+          {getDisasterIcon(report.disasterType)}
 
-        {/* Reported By */}
-        {report.reportedBy && (
-          <p className="text-muted">
-            👤 Reported by:{" "}
-            {report.reportedBy.name || "Unknown"}
-          </p>
-        )}
+        </div>
 
-        {/* =========================
-            OWNER / ADMIN ACTIONS
-        ========================= */}
 
-        {canManage && (
-          <div className="mt-3">
+        <div className="report-title">
 
-            {/* Edit */}
-            <button
-              type="button"
-              className="btn btn-warning me-2"
-              onClick={handleEdit}
-            >
-              ✏️ Edit
-            </button>
+          <h5>
+            {report.disasterType || "Disaster Report"}
+          </h5>
 
-            {/* Delete */}
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
-              {deleting
-                ? "Deleting..."
-                : "🗑️ Delete"}
-            </button>
+          <div className="report-location">
+
+            📍 {report.location || "Unknown Location"}
 
           </div>
+
+        </div>
+
+      </div>
+
+
+      {/* =====================================
+          CARD BODY
+      ===================================== */}
+
+      <div className="report-card-body">
+
+        {/* Severity + Status */}
+
+        <div className="report-badges">
+
+          <span
+            className={`report-badge ${getSeverityClass()}`}
+          >
+            ⚠️ {report.severity || "Unknown"}
+          </span>
+
+
+          <span
+            className={`report-badge ${getStatusClass()}`}
+          >
+
+            {report.status === "Resolved"
+              ? "🟢"
+              : report.status === "Under Review"
+              ? "🔵"
+              : "🟡"
+            }{" "}
+
+            {report.status || "Pending"}
+
+          </span>
+
+        </div>
+
+
+        {/* Description */}
+
+        <div className="report-description">
+
+          <div className="report-label">
+            📝 Description
+          </div>
+
+          <p>
+            {report.description ||
+              "No description provided."
+            }
+          </p>
+
+        </div>
+
+
+        {/* Reporter */}
+
+        {report.reportedBy && (
+
+          <div className="reporter-info">
+
+            <div className="reporter-avatar">
+              👤
+            </div>
+
+
+            <div>
+
+              <div className="report-label">
+                Reported By
+              </div>
+
+              <strong>
+                {report.reportedBy.name ||
+                  "Unknown"
+                }
+              </strong>
+
+
+              {report.reportedBy.email && (
+
+                <div className="reporter-email">
+
+                  📧 {report.reportedBy.email}
+
+                </div>
+
+              )}
+
+            </div>
+
+          </div>
+
         )}
 
       </div>
 
+
+      {/* =====================================
+          CARD FOOTER
+      ===================================== */}
+
+      {canManage && (
+
+        <div className="report-card-footer">
+
+          <button
+            type="button"
+            className="report-edit-btn"
+            onClick={handleEdit}
+          >
+            ✏️ Edit
+          </button>
+
+
+          <button
+            type="button"
+            className="report-delete-btn"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+
+            {deleting
+              ? "Deleting..."
+              : "🗑️ Delete"
+            }
+
+          </button>
+
+        </div>
+
+      )}
+
     </div>
+
   );
 }
 

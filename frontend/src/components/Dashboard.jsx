@@ -107,7 +107,7 @@ function Dashboard({ refresh }) {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
 
       {/* TITLE */}
       <h2 className="mb-4">

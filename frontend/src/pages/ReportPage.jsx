@@ -22,7 +22,7 @@ function ReportPage() {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
 
       {/* Page Header */}
       <div className="text-center mb-4">

@@ -7,9 +7,14 @@ function ManageReports() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Search & Filter
+  // ===============================
+  // Search & Filters
+  // ===============================
+
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [disasterType, setDisasterType] = useState("All");
+  const [severity, setSeverity] = useState("All");
+  const [status, setStatus] = useState("All");
 
   // ===============================
   // Load Reports
@@ -41,6 +46,55 @@ function ManageReports() {
   }, []);
 
   // ===============================
+  // Filter Reports
+  // ===============================
+
+  const filteredReports = reports.filter((report) => {
+    const searchText = search.toLowerCase();
+
+    const matchesSearch =
+      report.location?.toLowerCase().includes(searchText) ||
+      report.disasterType?.toLowerCase().includes(searchText) ||
+      report.description?.toLowerCase().includes(searchText) ||
+      report.reportedBy?.name
+        ?.toLowerCase()
+        .includes(searchText) ||
+      report.reportedBy?.email
+        ?.toLowerCase()
+        .includes(searchText);
+
+    const matchesDisaster =
+      disasterType === "All" ||
+      report.disasterType === disasterType;
+
+    const matchesSeverity =
+      severity === "All" ||
+      report.severity === severity;
+
+    const matchesStatus =
+      status === "All" ||
+      (report.status || "Pending") === status;
+
+    return (
+      matchesSearch &&
+      matchesDisaster &&
+      matchesSeverity &&
+      matchesStatus
+    );
+  });
+
+  // ===============================
+  // Reset Filters
+  // ===============================
+
+  const handleReset = () => {
+    setSearch("");
+    setDisasterType("All");
+    setSeverity("All");
+    setStatus("All");
+  };
+
+  // ===============================
   // Loading
   // ===============================
 
@@ -62,62 +116,13 @@ function ManageReports() {
   }
 
   // ===============================
-  // Filter Reports
+  // Manage Reports
   // ===============================
-
-  const filteredReports = reports.filter((report) => {
-
-    const searchText = search.toLowerCase();
-
-    const matchesSearch =
-      report.location
-        ?.toLowerCase()
-        .includes(searchText) ||
-      report.disasterType
-        ?.toLowerCase()
-        .includes(searchText) ||
-      report.description
-        ?.toLowerCase()
-        .includes(searchText);
-
-    const reportStatus =
-      report.status || "Pending";
-
-    const matchesStatus =
-      statusFilter === "All" ||
-      reportStatus === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-
-  // ===============================
-  // Status Counts
-  // ===============================
-
-  const pendingReports = reports.filter(
-    (report) =>
-      !report.status ||
-      report.status === "Pending"
-  ).length;
-
-  const underReviewReports = reports.filter(
-    (report) =>
-      report.status === "Under Review"
-  ).length;
-
-  const resolvedReports = reports.filter(
-    (report) =>
-      report.status === "Resolved"
-  ).length;
-
 
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
 
-      {/* ===============================
-          Header
-      =============================== */}
+      {/* Header */}
 
       <div className="mb-4">
 
@@ -126,86 +131,14 @@ function ManageReports() {
         </h2>
 
         <p className="text-muted">
-          View, search, edit, delete and manage
-          disaster report statuses.
+          Search, filter and manage disaster reports.
         </p>
 
       </div>
 
 
       {/* ===============================
-          Summary
-      =============================== */}
-
-      <div className="row g-3 mb-4">
-
-        <div className="col-md-4">
-
-          <div className="card shadow-sm text-center">
-
-            <div className="card-body">
-
-              <h6>
-                🟡 Pending
-              </h6>
-
-              <h3 className="text-secondary">
-                {pendingReports}
-              </h3>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div className="col-md-4">
-
-          <div className="card shadow-sm text-center">
-
-            <div className="card-body">
-
-              <h6>
-                🔵 Under Review
-              </h6>
-
-              <h3 className="text-warning">
-                {underReviewReports}
-              </h3>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div className="col-md-4">
-
-          <div className="card shadow-sm text-center">
-
-            <div className="card-body">
-
-              <h6>
-                🟢 Resolved
-              </h6>
-
-              <h3 className="text-success">
-                {resolvedReports}
-              </h3>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      {/* ===============================
-          Search & Filter
+          Search & Filters
       =============================== */}
 
       <div className="card shadow-sm mb-4">
@@ -216,7 +149,7 @@ function ManageReports() {
 
             {/* Search */}
 
-            <div className="col-md-8">
+            <div className="col-md-4">
 
               <label className="form-label">
                 🔍 Search Reports
@@ -225,7 +158,7 @@ function ManageReports() {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Search by location, disaster type or description..."
+                placeholder="Location, disaster, reporter..."
                 value={search}
                 onChange={(e) =>
                   setSearch(e.target.value)
@@ -235,9 +168,91 @@ function ManageReports() {
             </div>
 
 
-            {/* Status Filter */}
+            {/* Disaster Type */}
 
-            <div className="col-md-4">
+            <div className="col-md-2">
+
+              <label className="form-label">
+                Disaster Type
+              </label>
+
+              <select
+                className="form-select"
+                value={disasterType}
+                onChange={(e) =>
+                  setDisasterType(e.target.value)
+                }
+              >
+
+                <option value="All">
+                  All
+                </option>
+
+                <option value="Flood">
+                  Flood
+                </option>
+
+                <option value="Cyclone">
+                  Cyclone
+                </option>
+
+                <option value="Fire">
+                  Fire
+                </option>
+
+                <option value="Earthquake">
+                  Earthquake
+                </option>
+
+                <option value="Landslide">
+                  Landslide
+                </option>
+
+              </select>
+
+            </div>
+
+
+            {/* Severity */}
+
+            <div className="col-md-2">
+
+              <label className="form-label">
+                Severity
+              </label>
+
+              <select
+                className="form-select"
+                value={severity}
+                onChange={(e) =>
+                  setSeverity(e.target.value)
+                }
+              >
+
+                <option value="All">
+                  All
+                </option>
+
+                <option value="Low">
+                  Low
+                </option>
+
+                <option value="Medium">
+                  Medium
+                </option>
+
+                <option value="High">
+                  High
+                </option>
+
+              </select>
+
+            </div>
+
+
+            {/* Status */}
+
+            <div className="col-md-2">
 
               <label className="form-label">
                 Status
@@ -245,29 +260,43 @@ function ManageReports() {
 
               <select
                 className="form-select"
-                value={statusFilter}
+                value={status}
                 onChange={(e) =>
-                  setStatusFilter(e.target.value)
+                  setStatus(e.target.value)
                 }
               >
 
                 <option value="All">
-                  All Status
+                  All
                 </option>
 
                 <option value="Pending">
-                  🟡 Pending
+                  Pending
                 </option>
 
                 <option value="Under Review">
-                  🔵 Under Review
+                  Under Review
                 </option>
 
                 <option value="Resolved">
-                  🟢 Resolved
+                  Resolved
                 </option>
 
               </select>
+
+            </div>
+
+
+            {/* Reset */}
+
+            <div className="col-md-2 d-flex align-items-end">
+
+              <button
+                className="btn btn-secondary w-100"
+                onClick={handleReset}
+              >
+                🔄 Reset
+              </button>
 
             </div>
 
@@ -278,9 +307,7 @@ function ManageReports() {
       </div>
 
 
-      {/* ===============================
-          Results Count
-      =============================== */}
+      {/* Result Count */}
 
       <div className="mb-3">
 
@@ -292,9 +319,7 @@ function ManageReports() {
       </div>
 
 
-      {/* ===============================
-          Reports Table
-      =============================== */}
+      {/* Reports */}
 
       <RecentReports
         reports={filteredReports}
