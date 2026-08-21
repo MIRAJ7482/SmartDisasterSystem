@@ -68,6 +68,28 @@ export const updateReport = async (id, reportData) => {
   return response.data;
 };
 
+// =====================================
+// Update Report Status
+// Admin Only
+// =====================================
+export const updateReportStatus = async (id, status) => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.put(
+    `${API_URL}/${id}/status`,
+    {
+      status,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
 // ===============================
 // Login
 // ===============================
