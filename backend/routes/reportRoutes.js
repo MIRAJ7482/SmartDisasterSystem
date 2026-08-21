@@ -1,4 +1,5 @@
 const express = require("express");
+
 const router = express.Router();
 
 const {
@@ -6,16 +7,23 @@ const {
   createReport,
   deleteReport,
   updateReport,
+  updateReportStatus,
 } = require("../controllers/reportController");
 
-const { protect } = require("../middleware/authMiddleware");
+const {
+  protect,
+  adminOnly,
+} = require("../middleware/authMiddleware");
 
 // =====================================
 // GET ALL REPORTS
 // Public - Everyone can view
 // =====================================
 
-router.get("/", getReports);
+router.get(
+  "/",
+  getReports
+);
 
 
 // =====================================
@@ -33,7 +41,6 @@ router.post(
 // =====================================
 // UPDATE REPORT
 // Owner OR Admin
-// Permission checked in controller
 // =====================================
 
 router.put(
@@ -46,13 +53,25 @@ router.put(
 // =====================================
 // DELETE REPORT
 // Owner OR Admin
-// Permission checked in controller
 // =====================================
 
 router.delete(
   "/:id",
   protect,
   deleteReport
+);
+
+
+// =====================================
+// UPDATE REPORT STATUS
+// Admin Only
+// =====================================
+
+router.put(
+  "/:id/status",
+  protect,
+  adminOnly,
+  updateReportStatus
 );
 
 
