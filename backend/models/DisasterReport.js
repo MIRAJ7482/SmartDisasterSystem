@@ -15,11 +15,19 @@ const disasterReportSchema = new mongoose.Schema(
     severity: {
       type: String,
       required: true,
+      enum: ["Low", "Medium", "High"],
     },
 
     description: {
       type: String,
       required: true,
+    },
+
+    // Report Status
+    status: {
+      type: String,
+      enum: ["Pending", "Under Review", "Resolved"],
+      default: "Pending",
     },
 
     // User who created this report

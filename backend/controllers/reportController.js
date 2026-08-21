@@ -176,9 +176,83 @@ const updateReport = async (req, res) => {
 };
 
 
+// =====================================
+// UPDATE REPORT STATUS
+// Admin Only
+// =====================================
+
+const updateReportStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // Allowed statuses
+    const allowedStatuses = [
+      "Pending",
+      "Under Review",
+      "Resolved",
+    ];
+
+    // Validate status
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        message: "Invalid report status",
+      });
+    }
+
+    // Find report
+    const report = await DisasterReport.findById(
+      req.params.id
+    );
+
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found",
+      });
+    }
+
+    // Update status
+    report.status = status;
+
+    await report.save();
+
+    // Get updated report with user information
+    const updatedReport =
+      await DisasterReport.findById(
+        req.params.id
+      ).populate(
+        "reportedBy",
+        "name email role"
+      );
+
+    res.status(200).json({
+      message:
+        "Report status updated successfully",
+
+      report: updatedReport,
+    });
+
+  } catch (error) {
+    console.error(
+      "Update Report Status Error:",
+      error
+    );
+
+    res.status(500).json({
+      message:
+        "Failed to update report status",
+    });
+  }
+};
+
+
+// =====================================
+// EXPORT CONTROLLERS
+// =====================================
+
 module.exports = {
   getReports,
   createReport,
   deleteReport,
   updateReport,
+  updateReportStatus,
 };

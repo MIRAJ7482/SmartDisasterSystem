@@ -88,40 +88,10 @@ function AdminDashboard() {
     }
   };
 
-  /*// ===================================
+  // ===================================
   // Load Users
   // ===================================
 
-  const loadUsers = async () => {
-  try {
-    const response = await getAllUsers();
-
-    console.log("Users API Response:", response);
-
-    let data = [];
-
-    if (Array.isArray(response)) {
-      data = response;
-    } else if (Array.isArray(response?.users)) {
-      data = response.users;
-    } else if (Array.isArray(response?.data)) {
-      data = response.data;
-    } else if (Array.isArray(response?.data?.users)) {
-      data = response.data.users;
-    }
-
-    console.log("Users Loaded:", data);
-
-    setUsers(data);
-  } catch (error) {
-    console.error(
-      "Failed to load users:",
-      error?.response?.data || error
-    );
-
-    setUsers([]);
-  }
-};*/
 
 const loadUsers = async () => {
   try {
