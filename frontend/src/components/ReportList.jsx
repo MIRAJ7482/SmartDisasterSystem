@@ -40,7 +40,7 @@ function ReportList({
   // =========================
 
   const disasterTypes = [
-    ...new Set(
+        new Set(
       reports
         .map((report) => report.disasterType)
         .filter(Boolean)
