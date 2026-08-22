@@ -19,10 +19,12 @@ function Login() {
   // =====================================
 
   const handleChange = (e) => {
-    setFormData({
-      formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // =====================================
@@ -32,12 +34,49 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const email = formData.email.trim();
+    const password = formData.password;
+
+    // Check email
+    if (!email) {
+      alert("Please enter your email.");
+      return;
+    }
+
+    // Check password
+    if (!password) {
+      alert("Please enter your password.");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      const data = await loginUser(formData);
+      console.log("Login data:", {
+        email: email,
+        password: "***",
+      });
 
-      // Update AuthContext and LocalStorage
+      const data = await loginUser({
+        email,
+        password,
+      });
+
+      console.log("Login response:", data);
+
+      // =================================
+      // Check Response
+      // =================================
+
+      if (!data || !data.user || !data.token) {
+        alert("Invalid server response. Please try again.");
+        return;
+      }
+
+      // =================================
+      // Update AuthContext
+      // =================================
+
       login(data.user, data.token);
 
       // =================================
@@ -53,9 +92,19 @@ function Login() {
     } catch (error) {
       console.error("Login Error:", error);
 
+      console.error(
+        "Server Status:",
+        error.response?.status
+      );
+
+      console.error(
+        "Server Response:",
+        error.response?.data
+      );
+
       alert(
         error.response?.data?.message ||
-          "Login failed. Please check your email and password."
+        "Login failed. Please check your email and password."
       );
 
     } finally {
@@ -72,18 +121,30 @@ function Login() {
 
           <div className="card shadow">
 
-            {/* Header */}
+            {/* =========================
+                HEADER
+            ========================== */}
+
             <div className="card-header bg-primary text-white text-center">
+
               <h3 className="mb-0">
                 Login
               </h3>
+
             </div>
 
-            <div className="card-body">
+            {/* =========================
+                BODY
+            ========================== */}
+
+            <div className="card-body p-4">
 
               <form onSubmit={handleSubmit}>
 
-                {/* Email */}
+                {/* =========================
+                    EMAIL
+                ========================== */}
+
                 <div className="mb-3">
 
                   <label className="form-label">
@@ -98,11 +159,16 @@ function Login() {
                     onChange={handleChange}
                     placeholder="Enter your email"
                     required
+                    disabled={loading}
+                    autoComplete="email"
                   />
 
                 </div>
 
-                {/* Password */}
+                {/* =========================
+                    PASSWORD
+                ========================== */}
+
                 <div className="mb-3">
 
                   <label className="form-label">
@@ -117,24 +183,44 @@ function Login() {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     required
+                    disabled={loading}
+                    autoComplete="current-password"
                   />
 
                 </div>
 
-                {/* Login Button */}
+                {/* =========================
+                    LOGIN BUTTON
+                ========================== */}
+
                 <button
                   type="submit"
                   className="btn btn-primary w-100"
                   disabled={loading}
                 >
-                  {loading
-                    ? "Logging in..."
-                    : "Login"}
+
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+
+                      Logging in...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
+
                 </button>
 
               </form>
 
-              {/* Register Option */}
+              {/* =========================
+                  REGISTER OPTION
+              ========================== */}
+
               <div className="text-center mt-4">
 
                 <p className="mb-1">
