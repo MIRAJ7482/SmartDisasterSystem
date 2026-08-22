@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// Production Backend URL
+// ===============================
+// BACKEND API URL
+// ===============================
 const API_URL =
   import.meta.env.VITE_API_URL ||
   "https://smart-disaster-backend-skfj.onrender.com";
@@ -10,6 +12,9 @@ const API_URL =
 function Register() {
   const navigate = useNavigate();
 
+  // ===============================
+  // FORM STATE
+  // ===============================
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,33 +24,54 @@ function Register() {
 
   const [loading, setLoading] = useState(false);
 
-  // =========================
+  // ===============================
   // HANDLE INPUT CHANGE
-  // =========================
-
+  // ===============================
   const handleChange = (e) => {
-    setFormData({
-      formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // =========================
-  // HANDLE REGISTRATION
-  // =========================
-
+  // ===============================
+  // HANDLE REGISTER
+  // ===============================
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check password
-    if (formData.password !== formData.confirmPassword) {
+    // Get values directly from state
+    const name = formData.name;
+    const email = formData.email;
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
+
+    // ===============================
+    // PASSWORD CHECK
+    // ===============================
+
+    if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    // Check password length
-    if (formData.password.length < 6) {
+    // ===============================
+    // PASSWORD LENGTH
+    // ===============================
+
+    if (password.length < 6) {
       alert("Password must be at least 6 characters!");
+      return;
+    }
+
+    // ===============================
+    // EMAIL CHECK
+    // ===============================
+
+    if (!email.includes("@")) {
+      alert("Please enter a valid email address!");
       return;
     }
 
@@ -53,16 +79,20 @@ function Register() {
       setLoading(true);
 
       console.log(
-        "Registration API:",
+        "Register API:",
         `${API_URL}/api/auth/register`
       );
+
+      // ===============================
+      // REGISTER REQUEST
+      // ===============================
 
       const response = await axios.post(
         `${API_URL}/api/auth/register`,
         {
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          password: formData.password,
+          name: name.trim(),
+          email: email.trim(),
+          password: password,
         },
         {
           headers: {
@@ -71,9 +101,18 @@ function Register() {
         }
       );
 
-      console.log("Registration Response:", response.data);
+      console.log(
+        "Registration Response:",
+        response.data
+      );
 
-      alert("Registration Successful! Please Login.");
+      // ===============================
+      // SUCCESS
+      // ===============================
+
+      alert(
+        "Registration Successful! Please Login."
+      );
 
       // Clear form
       setFormData({
@@ -83,13 +122,19 @@ function Register() {
         confirmPassword: "",
       });
 
-      // Go to login page
+      // Go to login
       navigate("/login");
 
     } catch (error) {
-      console.error("Registration Error:", error);
+      console.error(
+        "Registration Error:",
+        error
+      );
 
-      // Backend error message
+      // ===============================
+      // SERVER ERROR
+      // ===============================
+
       if (error.response) {
         console.error(
           "Server Response:",
@@ -100,20 +145,30 @@ function Register() {
           error.response.data?.message ||
           "Registration failed!"
         );
+      }
 
-      } else if (error.request) {
+      // ===============================
+      // NETWORK ERROR
+      // ===============================
+
+      else if (error.request) {
         console.error(
-          "No response from server:",
+          "Network Error:",
           error.request
         );
 
         alert(
-          "Cannot connect to server. Please try again later."
+          "Unable to connect to server. Please try again."
         );
+      }
 
-      } else {
+      // ===============================
+      // OTHER ERROR
+      // ===============================
+
+      else {
         alert(
-          "Registration failed! Please try again."
+          "Something went wrong. Please try again."
         );
       }
 
@@ -151,7 +206,9 @@ function Register() {
 
               <form onSubmit={handleSubmit}>
 
-                {/* NAME */}
+                {/* =========================
+                    NAME
+                ========================== */}
 
                 <div className="mb-3">
 
@@ -172,7 +229,9 @@ function Register() {
 
                 </div>
 
-                {/* EMAIL */}
+                {/* =========================
+                    EMAIL
+                ========================== */}
 
                 <div className="mb-3">
 
@@ -193,7 +252,9 @@ function Register() {
 
                 </div>
 
-                {/* PASSWORD */}
+                {/* =========================
+                    PASSWORD
+                ========================== */}
 
                 <div className="mb-3">
 
@@ -207,19 +268,22 @@ function Register() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Create a password"
-                    minLength="6"
+                    placeholder="Enter password"
+                    minLength={6}
                     required
                     disabled={loading}
+                    autoComplete="new-password"
                   />
 
                   <small className="text-muted">
-                    Password must be at least 6 characters.
+                    Minimum 6 characters
                   </small>
 
                 </div>
 
-                {/* CONFIRM PASSWORD */}
+                {/* =========================
+                    CONFIRM PASSWORD
+                ========================== */}
 
                 <div className="mb-3">
 
@@ -233,15 +297,18 @@ function Register() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Confirm your password"
-                    minLength="6"
+                    placeholder="Confirm password"
+                    minLength={6}
                     required
                     disabled={loading}
+                    autoComplete="new-password"
                   />
 
                 </div>
 
-                {/* REGISTER BUTTON */}
+                {/* =========================
+                    REGISTER BUTTON
+                ========================== */}
 
                 <button
                   type="submit"
