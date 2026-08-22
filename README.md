@@ -109,7 +109,6 @@ Pass ::  admin1
 
 ## 📁 Project Structure
 
-```text
 SmartDisaster/
 │
 ├── backend/
