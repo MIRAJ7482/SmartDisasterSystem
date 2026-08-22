@@ -13,6 +13,7 @@ import {
 
 import { Bar, Doughnut } from "react-chartjs-2";
 import ReportList from "./ReportList";
+import DisasterMap from "./DisasterMap";
 
 ChartJS.register(
   CategoryScale,
@@ -53,7 +54,10 @@ function Dashboard({ refresh }) {
     (r) => r.severity === "Low"
   ).length;
 
+  // =====================
   // BAR CHART
+  // =====================
+
   const barData = {
     labels: ["High", "Medium", "Low"],
 
@@ -79,7 +83,10 @@ function Dashboard({ refresh }) {
     ],
   };
 
+  // =====================
   // DOUGHNUT CHART
+  // =====================
+
   const doughnutData = {
     labels: ["High", "Medium", "Low"],
 
@@ -109,7 +116,10 @@ function Dashboard({ refresh }) {
   return (
     <div className="container-fluid mt-4">
 
-      {/* TITLE */}
+      {/* =====================
+          TITLE
+      ====================== */}
+
       <h2 className="mb-4">
         📊 Disaster Dashboard
       </h2>
@@ -159,12 +169,35 @@ function Dashboard({ refresh }) {
       </div>
 
       {/* =====================
+          DISASTER MAP
+      ====================== */}
+
+      <div className="card shadow mb-5">
+
+        <div className="card-body">
+
+          <h3 className="mb-2">
+            🗺️ Disaster Map
+          </h3>
+
+          <p className="text-muted mb-4">
+            View reported disasters on the map.
+          </p>
+
+          <DisasterMap reports={reports} />
+
+        </div>
+
+      </div>
+
+      {/* =====================
           CHARTS
       ====================== */}
 
       <div className="row g-4 mb-5">
 
-        {/* BAR */}
+        {/* BAR CHART */}
+
         <div className="col-md-7">
 
           <div className="card shadow">
@@ -204,7 +237,8 @@ function Dashboard({ refresh }) {
 
         </div>
 
-        {/* DOUGHNUT */}
+        {/* DOUGHNUT CHART */}
+
         <div className="col-md-5">
 
           <div className="card shadow">

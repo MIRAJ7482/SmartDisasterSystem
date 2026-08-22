@@ -10,7 +10,6 @@ function RecentReports({ reports, onRefresh }) {
   const [deleting, setDeleting] = useState(null);
   const [updatingStatus, setUpdatingStatus] = useState(null);
 
-
   // =========================================
   // DISASTER ICON
   // =========================================
@@ -80,6 +79,13 @@ function RecentReports({ reports, onRefresh }) {
       return "🌡️";
     }
 
+    if (
+      disaster.includes("cold") ||
+      disaster.includes("cold wave")
+    ) {
+      return "🥶";
+    }
+
     if (disaster.includes("lightning")) {
       return "⚡";
     }
@@ -100,125 +106,6 @@ function RecentReports({ reports, onRefresh }) {
     }
 
     return "⚠️";
-  };
-
-
-  // =========================================
-  // DELETE REPORT
-  // =========================================
-
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this report?"
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-      setDeleting(id);
-
-      await deleteReport(id);
-
-      alert("Report deleted successfully.");
-
-      if (onRefresh) {
-        await onRefresh();
-      }
-
-    } catch (error) {
-      console.error(
-        "Delete Error:",
-        error.response?.data || error
-      );
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to delete report."
-      );
-
-    } finally {
-      setDeleting(null);
-    }
-  };
-
-
-  // =========================================
-  // EDIT REPORT
-  // =========================================
-
-  const handleEdit = async (report) => {
-    const location = window.prompt(
-      "Location:",
-      report.location
-    );
-
-    if (location === null) return;
-
-    const description = window.prompt(
-      "Description:",
-      report.description
-    );
-
-    if (description === null) return;
-
-    try {
-      await updateReport(report._id, {
-        location,
-        disasterType: report.disasterType,
-        severity: report.severity,
-        description,
-      });
-
-      alert("Report updated successfully.");
-
-      if (onRefresh) {
-        await onRefresh();
-      }
-
-    } catch (error) {
-      console.error(
-        "Update Error:",
-        error.response?.data || error
-      );
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to update report."
-      );
-    }
-  };
-
-
-  // =========================================
-  // UPDATE STATUS
-  // =========================================
-
-  const handleStatusChange = async (id, status) => {
-    try {
-      setUpdatingStatus(id);
-
-      await updateReportStatus(id, status);
-
-      alert("Report status updated successfully.");
-
-      if (onRefresh) {
-        await onRefresh();
-      }
-
-    } catch (error) {
-      console.error(
-        "Status Update Error:",
-        error.response?.data || error
-      );
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to update report status."
-      );
-
-    } finally {
-      setUpdatingStatus(null);
-    }
   };
 
 
@@ -263,69 +150,142 @@ function RecentReports({ reports, onRefresh }) {
 
 
   // =========================================
-  // STATUS ICON
+  // DELETE REPORT
   // =========================================
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Resolved":
-        return "🟢";
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this report?"
+    );
 
-      case "Under Review":
-        return "🔵";
+    if (!confirmDelete) return;
 
-      case "Pending":
-      default:
-        return "🟡";
+    try {
+      setDeleting(id);
+
+      await deleteReport(id);
+
+      if (onRefresh) {
+        await onRefresh();
+      }
+
+    } catch (error) {
+      console.error(
+        "Delete Error:",
+        error.response?.data || error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete report."
+      );
+
+    } finally {
+      setDeleting(null);
     }
   };
 
 
-  return (
-    <div className="admin-reports-section">
+  // =========================================
+  // EDIT REPORT
+  // =========================================
+
+  const handleEdit = async (report) => {
+    const location = window.prompt(
+      "Location:",
+      report.location || ""
+    );
+
+    if (location === null) return;
+
+    const description = window.prompt(
+      "Description:",
+      report.description || ""
+    );
+
+    if (description === null) return;
+
+    try {
+      await updateReport(report._id, {
+        location,
+        disasterType: report.disasterType,
+        severity: report.severity,
+        description,
+      });
+
+      if (onRefresh) {
+        await onRefresh();
+      }
+
+    } catch (error) {
+      console.error(
+        "Update Error:",
+        error.response?.data || error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to update report."
+      );
+    }
+  };
 
 
-      {/* =====================================
-          SECTION HEADER
-      ===================================== */}
+  // =========================================
+  // UPDATE STATUS
+  // =========================================
 
-      <div className="admin-reports-header">
+  const handleStatusChange = async (id, status) => {
+    try {
+      setUpdatingStatus(id);
 
-        <div>
+      await updateReportStatus(id, status);
 
-          <h4>
-            📋 Recent Disaster Reports
-          </h4>
+      if (onRefresh) {
+        await onRefresh();
+      }
 
-          <p>
-            Monitor, review and manage disaster reports
-          </p>
+    } catch (error) {
+      console.error(
+        "Status Update Error:",
+        error.response?.data || error
+      );
 
-        </div>
+      alert(
+        error.response?.data?.message ||
+          "Failed to update report status."
+      );
+
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
 
 
-        <div className="admin-report-count">
+  // =========================================
+  // NO REPORTS
+  // =========================================
 
-          <span>
-            {reports.length}
+  if (!reports || reports.length === 0) {
+    return (
+      <div className="admin-reports-section">
+
+        <div className="admin-reports-heading">
+          <div>
+            <h4>📋 Recent Disaster Reports</h4>
+
+            <p>
+              View and manage disaster reports
+            </p>
+          </div>
+
+          <span className="admin-report-count">
+            0 Reports
           </span>
-
-          <small>
-            Reports
-          </small>
-
         </div>
 
-      </div>
 
-
-      {/* =====================================
-          NO REPORTS
-      ===================================== */}
-
-      {reports.length === 0 ? (
-
-        <div className="admin-empty-state">
+        <div className="admin-empty-card">
 
           <div className="admin-empty-icon">
             📭
@@ -341,246 +301,256 @@ function RecentReports({ reports, onRefresh }) {
 
         </div>
 
-      ) : (
+      </div>
+    );
+  }
 
 
-        /* =====================================
-           REPORT GRID
-        ===================================== */
+  // =========================================
+  // RENDER
+  // =========================================
 
-        <div className="admin-report-grid">
+  return (
+    <div className="admin-reports-section">
 
-          {reports.slice(0, 10).map((report) => (
+      {/* =====================================
+          SECTION HEADER
+      ===================================== */}
 
-            <div
-              className={`admin-report-card ${getSeverityClass(
-                report.severity
-              )}`}
-              key={report._id}
-            >
+      <div className="admin-reports-heading">
+
+        <div>
+          <h4>
+            📋 Recent Disaster Reports
+          </h4>
+
+          <p>
+            View and manage disaster reports
+          </p>
+        </div>
+
+        <span className="admin-report-count">
+          {reports.length} Reports
+        </span>
+
+      </div>
 
 
-              {/* =================================
-                  CARD TOP
-              ================================= */}
+      {/* =====================================
+          REPORT GRID
+      ===================================== */}
 
-              <div className="admin-card-top">
+      <div className="admin-reports-grid">
 
+        {reports.slice(0, 10).map((report) => (
 
-                <div className="admin-disaster-info">
+          <div
+            className="admin-report-card"
+            key={report._id}
+          >
 
-                  <div className="admin-disaster-icon">
+            {/* =================================
+                HEADER
+            ================================= */}
 
-                    {getDisasterIcon(
-                      report.disasterType
-                    )}
+            <div className="admin-report-header">
 
+              <div className="admin-report-main">
+
+                <div className="admin-report-icon">
+                  {getDisasterIcon(
+                    report.disasterType
+                  )}
+                </div>
+
+                <div>
+
+                  <h5>
+                    {report.disasterType ||
+                      "Disaster Report"}
+                  </h5>
+
+                  <div className="admin-report-location">
+                    📍{" "}
+                    {report.location ||
+                      "Unknown Location"}
                   </div>
 
+                </div>
+
+              </div>
+
+
+              <span
+                className={`admin-severity ${getSeverityClass(
+                  report.severity
+                )}`}
+              >
+                ⚠️ {report.severity || "Unknown"}
+              </span>
+
+            </div>
+
+
+            {/* =================================
+                BODY
+            ================================= */}
+
+            <div className="admin-report-body">
+
+              {/* STATUS */}
+
+              <div className="admin-info-block">
+
+                <div className="admin-info-label">
+                  📌 Status
+                </div>
+
+                <div className="admin-status-row">
+
+                  <span
+                    className={`admin-status ${getStatusClass(
+                      report.status
+                    )}`}
+                  >
+                    {report.status ===
+                    "Resolved"
+                      ? "🟢"
+                      : report.status ===
+                        "Under Review"
+                      ? "🔵"
+                      : "🟡"}{" "}
+                    {report.status ||
+                      "Pending"}
+                  </span>
+
+                  <select
+                    className="admin-status-select"
+                    value={
+                      report.status ||
+                      "Pending"
+                    }
+                    onChange={(e) =>
+                      handleStatusChange(
+                        report._id,
+                        e.target.value
+                      )
+                    }
+                    disabled={
+                      updatingStatus ===
+                      report._id
+                    }
+                  >
+
+                    <option value="Pending">
+                      Pending
+                    </option>
+
+                    <option value="Under Review">
+                      Under Review
+                    </option>
+
+                    <option value="Resolved">
+                      Resolved
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+
+              {/* REPORTER */}
+
+              <div className="admin-info-block">
+
+                <div className="admin-info-label">
+                  👤 Reported By
+                </div>
+
+                <div className="admin-reporter">
+
+                  <div className="admin-reporter-avatar">
+                    👤
+                  </div>
 
                   <div>
 
-                    <h5>
-                      {report.disasterType ||
-                        "Disaster Report"}
-                    </h5>
+                    <strong>
+                      {report.reportedBy?.name ||
+                        "Unknown"}
+                    </strong>
 
-                    <div className="admin-location">
-
-                      📍{" "}
-                      {report.location ||
-                        "Unknown Location"}
-
-                    </div>
+                    <small>
+                      {report.reportedBy?.email ||
+                        "No email available"}
+                    </small>
 
                   </div>
-
-                </div>
-
-
-                {/* Severity */}
-
-                <span
-                  className={`admin-severity-badge ${getSeverityClass(
-                    report.severity
-                  )}`}
-                >
-                  {report.severity || "Unknown"}
-                </span>
-
-              </div>
-
-
-              {/* =================================
-                  CARD BODY
-              ================================= */}
-
-              <div className="admin-card-body">
-
-
-                {/* STATUS */}
-
-                <div className="admin-info-block">
-
-                  <label>
-                    📌 Status
-                  </label>
-
-
-                  <div className="admin-status-row">
-
-                    <span
-                      className={`admin-status-badge ${getStatusClass(
-                        report.status
-                      )}`}
-                    >
-
-                      {getStatusIcon(
-                        report.status
-                      )}
-
-                      {" "}
-
-                      {report.status ||
-                        "Pending"}
-
-                    </span>
-
-
-                    <select
-                      className="admin-status-select"
-                      value={
-                        report.status ||
-                        "Pending"
-                      }
-                      onChange={(e) =>
-                        handleStatusChange(
-                          report._id,
-                          e.target.value
-                        )
-                      }
-                      disabled={
-                        updatingStatus ===
-                        report._id
-                      }
-                    >
-
-                      <option value="Pending">
-                        🟡 Pending
-                      </option>
-
-                      <option value="Under Review">
-                        🔵 Under Review
-                      </option>
-
-                      <option value="Resolved">
-                        🟢 Resolved
-                      </option>
-
-                    </select>
-
-                  </div>
-
-                </div>
-
-
-                {/* REPORTER */}
-
-                <div className="admin-info-block">
-
-                  <label>
-                    👤 Reported By
-                  </label>
-
-
-                  <div className="admin-reporter">
-
-                    <div className="admin-avatar">
-                      👤
-                    </div>
-
-
-                    <div>
-
-                      <strong>
-                        {report.reportedBy?.name ||
-                          "Unknown"}
-                      </strong>
-
-                      <small>
-                        {report.reportedBy?.email ||
-                          "N/A"}
-                      </small>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                {/* DESCRIPTION */}
-
-                <div className="admin-description">
-
-                  <label>
-                    📝 Description
-                  </label>
-
-                  <p>
-                    {report.description ||
-                      "No description provided."}
-                  </p>
 
                 </div>
 
               </div>
 
 
-              {/* =================================
-                  CARD FOOTER
-              ================================= */}
+              {/* DESCRIPTION */}
 
-              <div className="admin-card-footer">
+              <div className="admin-info-block">
 
+                <div className="admin-info-label">
+                  📝 Description
+                </div>
 
-                <button
-                  type="button"
-                  className="admin-edit-btn"
-                  onClick={() =>
-                    handleEdit(report)
-                  }
-                >
-                  ✏️ Edit
-                </button>
-
-
-                <button
-                  type="button"
-                  className="admin-delete-btn"
-                  onClick={() =>
-                    handleDelete(report._id)
-                  }
-                  disabled={
-                    deleting === report._id
-                  }
-                >
-
-                  {deleting === report._id
-                    ? "Deleting..."
-                    : "🗑️ Delete"}
-
-                </button>
+                <p className="admin-description">
+                  {report.description ||
+                    "No description provided."}
+                </p>
 
               </div>
 
             </div>
 
-          ))}
 
-        </div>
+            {/* =================================
+                FOOTER
+            ================================= */}
 
-      )}
+            <div className="admin-report-footer">
+
+              <button
+                type="button"
+                className="admin-edit-btn"
+                onClick={() =>
+                  handleEdit(report)
+                }
+              >
+                ✏️ Edit
+              </button>
+
+
+              <button
+                type="button"
+                className="admin-delete-btn"
+                onClick={() =>
+                  handleDelete(report._id)
+                }
+                disabled={
+                  deleting === report._id
+                }
+              >
+                {deleting === report._id
+                  ? "Deleting..."
+                  : "🗑️ Delete"}
+              </button>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
 
     </div>
   );
